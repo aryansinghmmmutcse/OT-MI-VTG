@@ -8,7 +8,7 @@ from os.path import join, exists
 from utils.basic_utils import load_jsonl, l2_normalize_np_array
 from utils.tensor_utils import pad_sequences_1d
 from cg_detr.span_utils import span_xx_to_cxw
-from torchtext import vocab
+##from torchtext import vocab
 import torch.nn as nn
 
 logger = logging.getLogger(__name__)

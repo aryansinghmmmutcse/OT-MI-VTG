@@ -471,6 +471,13 @@ class T2V_TransformerEncoderLayer(nn.Module):
                  activation="relu", normalize_before=False, num_dummies=3):
         super().__init__()
         self.self_attn = cateattention(d_model, nhead, dropout=dropout, num_dummies=num_dummies)
+        # Calibration net — controls OT contribution per frame
+        # bias=-3 → sigmoid(-3)≈0.05 at start → nearly pure CG-DETR
+        self.ot_calibrator = nn.Sequential(
+            nn.Linear(d_model, 64), nn.ReLU(), nn.Linear(64, 1), nn.Sigmoid()
+        )
+        nn.init.zeros_(self.ot_calibrator[2].weight)
+        nn.init.constant_(self.ot_calibrator[2].bias, -3.0)
         # Implementation of Feedforward model
         self.linear1 = nn.Linear(d_model, dim_feedforward)
         self.dropout = nn.Dropout(dropout)
@@ -514,8 +521,43 @@ class T2V_TransformerEncoderLayer(nn.Module):
         #   are not allowed to attend while ``False`` values will be unchanged. If a FloatTensor
         #   is provided, it will be added to the attention weight.
         # print(q.shape, k.shape, v.shape, attn_mask.shape, src_key_padding_mask[:, video_length + 1:].shape)
-        src2, attn_weights = self.self_attn(q, k, v, attn_mask=attn_mask,
-                                            key_padding_mask=src_key_padding_mask[:, video_length:], dummy=dummy)
+        # RESIDUAL OT + CALIBRATION NET
+        import torch.nn.functional as _F
+
+        # Step 1: Original softmax attention (primary path)
+        src2_soft, attn_weights = self.self_attn(q, k, v,
+                                                  attn_mask=attn_mask,
+                                                  key_padding_mask=src_key_padding_mask[:, video_length:],
+                                                  dummy=dummy)
+
+        # Step 2: OT correction
+        Q_b = _F.normalize(q.permute(1,0,2), dim=-1)
+        K_b = _F.normalize(k.permute(1,0,2), dim=-1)
+        V_b = v.permute(1,0,2)
+        cost = 1.0 - torch.bmm(Q_b, K_b.transpose(1,2))
+        B_, _T, _L = cost.shape
+        if _T == 0 or _L == 0:
+            src2 = src2_soft
+        else:
+            log_K = -cost.clamp(0, 10) / 0.1
+            log_r = -torch.tensor(float(_T), device=q.device).log()
+            log_c = -torch.tensor(float(_L), device=q.device).log()
+            log_u = torch.full((B_, _T), log_r.item(), device=q.device)
+            log_v = torch.full((B_, _L), log_c.item(), device=q.device)
+            for _ in range(5):
+                log_u = log_r - torch.logsumexp(log_K + log_v.unsqueeze(1), dim=2)
+                log_v = log_c - torch.logsumexp(log_K + log_u.unsqueeze(2), dim=1)
+            P = torch.exp(log_K + log_u.unsqueeze(2) + log_v.unsqueeze(1))
+            src2_ot = torch.bmm(P, V_b).permute(1,0,2)   # (T,B,D)
+            attn_weights = P
+
+            # Step 3: Calibration net — per-frame learned gate
+            # Starts near 0 (bias=-3) → model begins as pure CG-DETR
+            # Gradually opens as training finds OT useful
+            alpha = self.ot_calibrator(q.permute(1,0,2))  # (B,T,1)
+            s_b = src2_soft.permute(1,0,2)                # (B,T,D)
+            o_b = src2_ot.permute(1,0,2)                  # (B,T,D)
+            src2 = ((1-alpha)*s_b + alpha*o_b).permute(1,0,2)  # (T,B,D)
 
         src2 = src[:video_length] + self.dropout1(src2)
         src3 = self.norm1(src2)

@@ -1,0 +1,231 @@
+cg_detr/train.py:52:                                 total=num_training_examples):
+cg_detr/train.py:135:        if opt.eval_path is not None and (epoch_i + 1) % eval_epoch_interval == 0:
+cg_detr/train.py:150:            if metrics_nms is not None:
+cg_detr/train.py:248:        if opt.eval_path is not None and (epoch_i + 1) % eval_epoch_interval == 0:
+cg_detr/train.py:263:            if metrics_nms is not None:
+cg_detr/train.py:346:        normalize_v=not opt.no_norm_vfeat,
+cg_detr/train.py:347:        normalize_t=not opt.no_norm_tfeat,
+cg_detr/train.py:357:    if opt.eval_path is not None:
+cg_detr/train.py:384:    if not debug:
+cg_detr/matcher.py:17:    while the others are un-matched (and thus treated as non-objects).
+cg_detr/matcher.py:63:        tgt_ids = torch.full([len(tgt_spans)], self.foreground_label)   # [total #spans in the batch]
+cg_detr/matcher.py:68:        cost_class = -out_prob[:, tgt_ids]  # [batch_size * num_queries, total #spans in the batch]
+cg_detr/matcher.py:75:            cost_span = torch.cdist(out_spans, tgt_spans, p=1)  # [batch_size * num_queries, total #spans in the batch]
+cg_detr/matcher.py:78:            # [batch_size * num_queries, total #spans in the batch]
+cg_detr/scripts/train.sh:5:results_root=results
+cg_detr/scripts/train.sh:14:feat_root=../features/qvhighlight
+cg_detr/scripts/train.sh:20:  v_feat_dirs+=(${feat_root}/slowfast_features)
+cg_detr/scripts/train.sh:24:  v_feat_dirs+=(${feat_root}/clip_features)
+cg_detr/scripts/train.sh:30:  t_feat_dir=${feat_root}/clip_text_features/
+cg_detr/scripts/train.sh:59:--results_root ${results_root} \
+cg_detr/scripts/charades_sta/train.sh:5:results_root=results_charadesSTA
+cg_detr/scripts/charades_sta/train.sh:14:feat_root=../features/charades
+cg_detr/scripts/charades_sta/train.sh:20:  v_feat_dirs+=(${feat_root}/slowfast_features)
+cg_detr/scripts/charades_sta/train.sh:24:  v_feat_dirs+=(${feat_root}/clip_features)
+cg_detr/scripts/charades_sta/train.sh:30:  t_feat_dir=${feat_root}/clip_text_features/
+cg_detr/scripts/charades_sta/train.sh:42:total_prompts=10
+cg_detr/scripts/charades_sta/train.sh:62:--results_root ${results_root} \
+cg_detr/scripts/charades_sta/train.sh:80:--total_prompts ${total_prompts} \
+cg_detr/scripts/charades_sta/train_vgg.sh:5:results_root=results_charadesSTA
+cg_detr/scripts/charades_sta/train_vgg.sh:14:feat_root=../features/charades
+cg_detr/scripts/charades_sta/train_vgg.sh:20:  v_feat_dirs+=(${feat_root}/vgg_features/rgb_features)
+cg_detr/scripts/charades_sta/train_vgg.sh:27:  t_feat_dir=${feat_root}/clip_text_features/
+cg_detr/scripts/charades_sta/train_vgg.sh:46:total_prompts=10
+cg_detr/scripts/charades_sta/train_vgg.sh:59:--results_root ${results_root} \
+cg_detr/scripts/charades_sta/train_vgg.sh:78:--total_prompts ${total_prompts} \
+cg_detr/scripts/youtube_uni/train.sh:5:results_root=results_youtubeuni
+cg_detr/scripts/youtube_uni/train.sh:17:# feat_root=../features/tvsum
+cg_detr/scripts/youtube_uni/train.sh:18:feat_root=../features/youtube_uni
+cg_detr/scripts/youtube_uni/train.sh:23:v_feat_dirs+=(${feat_root}/vid_clip)
+cg_detr/scripts/youtube_uni/train.sh:24:v_feat_dirs+=(${feat_root}/vid_slowfast)
+cg_detr/scripts/youtube_uni/train.sh:27:t_feat_dir=${feat_root}/txt_clip/ # maybe not used
+cg_detr/scripts/youtube_uni/train.sh:60:                --results_root ${results_root}/${dset_domain} \
+cg_detr/scripts/youtube_uni/train.sh:79:                --total_prompts 10 \
+cg_detr/scripts/tacos/train.sh:5:results_root=results_tacos
+cg_detr/scripts/tacos/train.sh:14:feat_root=../features/tacos
+cg_detr/scripts/tacos/train.sh:20:  v_feat_dirs+=(${feat_root}/slowfast_features)
+cg_detr/scripts/tacos/train.sh:24:  v_feat_dirs+=(${feat_root}/clip_features)
+cg_detr/scripts/tacos/train.sh:30:  t_feat_dir=${feat_root}/clip_text_features/
+cg_detr/scripts/tacos/train.sh:52:total_prompts=10
+cg_detr/scripts/tacos/train.sh:65:--results_root ${results_root} \
+cg_detr/scripts/tacos/train.sh:83:--total_prompts ${total_prompts} \
+cg_detr/scripts/tvsum/train_tvsum.sh:5:results_root=results_tvsum
+cg_detr/scripts/tvsum/train_tvsum.sh:15:feat_root=../features/tvsum
+cg_detr/scripts/tvsum/train_tvsum.sh:20:v_feat_dirs+=(${feat_root}/video_features)
+cg_detr/scripts/tvsum/train_tvsum.sh:23:t_feat_dir=${feat_root}/query_features/ # maybe not used
+cg_detr/scripts/tvsum/train_tvsum.sh:56:                --results_root ${results_root}/${dset_domain} \
+cg_detr/scripts/tvsum/train_tvsum.sh:73:                --total_prompts 10 \
+cg_detr/scripts/train_onlyclip.sh:5:results_root=results
+cg_detr/scripts/train_onlyclip.sh:14:feat_root=../features/qvhighlight
+cg_detr/scripts/train_onlyclip.sh:20:  v_feat_dirs+=(${feat_root}/slowfast_features)
+cg_detr/scripts/train_onlyclip.sh:24:  v_feat_dirs+=(${feat_root}/clip_features)
+cg_detr/scripts/train_onlyclip.sh:30:  t_feat_dir=${feat_root}/clip_text_features/
+cg_detr/scripts/train_onlyclip.sh:59:--results_root ${results_root} \
+cg_detr/start_end_dataset.py:207:                elif "subs_train" not in self.data_path:
+cg_detr/start_end_dataset.py:255:        """Sum the scores from the three annotations, then take the two clips with the
+cg_detr/start_end_dataset.py:270:        # the min(_, ctx_l-1) here is incorrect, but should not cause
+cg_detr/start_end_dataset.py:290:        """Sum the scores from the three annotations, then take the two clips with the
+cg_detr/start_end_dataset.py:314:        # the min(_, ctx_l-1) here is incorrect, but should not cause
+cg_detr/start_end_dataset.py:387:            Note a maximum of `self.max_windows` windows are used.
+cg_detr/start_end_dataset.py:401:            raise NotImplementedError
+cg_detr/start_end_dataset.py:461:            # some features are slightly longer than the others
+cg_detr/start_end_dataset.py:481:            # some features are slightly longer than the others
+cg_detr/start_end_dataset.py:498:            # some features are slightly longer than the others
+cg_detr/model_otmi.py:3:sys.path.insert(0, "/mnt/DATA/hari/vand/VTG_Project/CGDETR_OTMI")
+cg_detr/model_otmi.py:42:    # Build standard CG-DETR (with OT already in transformer.py)
+cg_detr/model.py:31:    if isinstance(module, nn.Linear) and module.bias is not None:
+cg_detr/model.py:67:            num_queries: number of object queries, ie detection slot. This is the maximal number of objects
+cg_detr/model.py:118:        self.global_rep_token = torch.nn.Parameter(torch.randn(args.total_prompts, hidden_dim))
+cg_detr/model.py:158:        if vid is not None: ## for demo (run_on_video/run.py)
+cg_detr/model.py:166:        if src_aud is not None:
+cg_detr/model.py:214:        if targets is not None: # train
+cg_detr/model.py:227:            ### for Not moment token ####
+cg_detr/model.py:248:        if targets is not None: ## train
+cg_detr/model.py:289:        if vid is not None: ## for demo (run_on_video/run.py)
+cg_detr/model.py:300:                pos_neg = pos.clone()  # since it does not use actual content
+cg_detr/model.py:345:        if targets is not None:
+cg_detr/model.py:356:                assert proj_queries is not None
+cg_detr/model.py:449:            # TODO this should probably be a separate loss, not hacked in this one here
+cg_detr/model.py:455:        if "saliency_pos_labels" not in targets:
+cg_detr/model.py:459:        if outputs["saliency_scores_neg"] is not None: ## When batch size is not 1 (negative pair exists)
+cg_detr/model.py:556:            if outputs["t2vattnvalues_neg"] is not None:
+cg_detr/model.py:751:        if outputs["memory_moment"] is not None:
+cg_detr/model.py:795:        if outputs["moment2txt_similarity"] is not None:
+cg_detr/model.py:906:        # only for HL, do not use matcher
+cg_detr/model.py:1046:    use_matcher = not (args.dset_name in ['youtube_uni', 'tvsum'])
+cg_detr/inference.py:14:from cg_detr.model_otmi import build_model
+cg_detr/inference.py:51:            verbose=opt.debug, match_number=not opt.debug
+cg_detr/inference.py:73:                verbose=opt.debug, match_number=not opt.debug
+cg_detr/inference.py:95:    write_tb = tb_writer is not None and epoch_i is not None
+cg_detr/inference.py:226:    write_tb = tb_writer is not None and epoch_i is not None
+cg_detr/inference.py:259:            if not opt.no_sort_results:
+cg_detr/inference.py:325:    if criterion is not None and eval_dataset.load_labels:
+cg_detr/inference.py:388:    if opt.resume is not None:
+cg_detr/inference.py:416:    if train_opt is not None:
+cg_detr/inference.py:420:    if split is not None:
+cg_detr/inference.py:422:    if splitfile is not None:
+cg_detr/inference.py:433:    assert opt.eval_path is not None
+cg_detr/inference.py:449:        normalize_v=not opt.no_norm_vfeat,
+cg_detr/inference.py:450:        normalize_t=not opt.no_norm_tfeat,
+cg_detr/inference.py:473:    if metrics_nms is not None:
+cg_detr/transformer.py:121:        if msrc is not None:
+cg_detr/transformer.py:129:        if nmsrc is not None:
+cg_detr/transformer.py:228:        if self.norm is not None:
+cg_detr/transformer.py:260:        if self.norm is not None:
+cg_detr/transformer.py:293:            raise NotImplementedError("Unknown query_scale_type: {}".format(query_scale_type))
+cg_detr/transformer.py:318:        if not keep_query_pos:
+cg_detr/transformer.py:343:            # For the first decoder layer, we do not apply transformation over p_s
+cg_detr/transformer.py:370:            if self.bbox_embed is not None:
+cg_detr/transformer.py:385:        if self.norm is not None:
+cg_detr/transformer.py:392:            if self.bbox_embed is not None:
+cg_detr/transformer.py:448:        """not used"""
+cg_detr/transformer.py:497:        assert video_length is not None
+cg_detr/transformer.py:514:        #   are not allowed to attend while ``False`` values will be unchanged. If a FloatTensor
+cg_detr/transformer.py:603:        if not rm_self_attn_decoder:
+cg_detr/transformer.py:654:        if not self.rm_self_attn_decoder:
+cg_detr/transformer.py:825:    if drop_prob == 0.0 or not training:
+cg_detr/transformer.py:863:    raise RuntimeError(F"activation should be relu/gelu, not {activation}.")
+cg_detr/config.py:31:                            help="debug (fast) mode, break all loops, do not load all data into memory.")
+cg_detr/config.py:34:                                 "Use small portion for debug purposes. Note this is different from --debug, "
+cg_detr/config.py:35:                                 "which works by breaking the loops, typically they are not used together.")
+cg_detr/config.py:36:        parser.add_argument("--results_root", type=str, default="results")
+cg_detr/config.py:76:        parser.add_argument("--no_norm_vfeat", action="store_true", help="Do not do normalize video feat")
+cg_detr/config.py:77:        parser.add_argument("--no_norm_tfeat", action="store_true", help="Do not do normalize text feat")
+cg_detr/config.py:80:                                 "Note that sub ctx features are also accepted here.")
+cg_detr/config.py:118:                            help="Number of query slots")
+cg_detr/config.py:121:        parser.add_argument('--total_prompts', default=10, type=int,
+cg_detr/config.py:122:                            help="Number of query slots")
+cg_detr/config.py:126:        # other model configs
+cg_detr/config.py:164:                            help="do not sort results, use this for moment query visualization")
+cg_detr/config.py:172:                                 "-1: do not use nms. [0, 1]")
+cg_detr/config.py:180:        if not isinstance(self, TestOptions):
+cg_detr/config.py:181:            option_file_path = os.path.join(opt.results_dir, self.saved_option_filename)  # not yaml file indeed
+cg_detr/config.py:185:        if not self.initialized:
+cg_detr/config.py:190:            opt.results_root = os.path.sep.join(opt.results_root.split(os.path.sep)[:-1] + ["debug_results", ])
+cg_detr/config.py:197:            if a_feat_dir is not None:
+cg_detr/config.py:201:                if arg not in ["results_root", "num_workers", "nms_thd", "debug",  # "max_before_nms", "max_after_nms"
+cg_detr/config.py:206:            if opt.eval_results_dir is not None:
+cg_detr/config.py:213:            opt.results_dir = os.path.join(opt.results_root,
+cg_detr/config.py:216:                                                     'ndum_' + str(opt.num_dummies), 'nprom_' + str(opt.num_prompts) + '_' + str(opt.total_prompts)]))
+cg_detr/config.py:238:        opt.pin_memory = not opt.no_pin_memory
+cg_detr/config.py:242:        if not opt.use_video:
+cg_detr/config.py:259:                                 help="dir to save results, if not set, fall back to training results_dir")
+cg_detr/attention.py:66:        \text{MultiHead}(Q, K, V) = \text{Concat}(head_1,\dots,head_h)W^O
+cg_detr/attention.py:69:        embed_dim: total dimension of the model.
+cg_detr/attention.py:76:        kdim: total number of features in key. Default: None.
+cg_detr/attention.py:77:        vdim: total number of features in value. Default: None.
+cg_detr/attention.py:78:        Note: if kdim and vdim are None, they will be set to embed_dim such that
+cg_detr/attention.py:90:        self.kdim = kdim if kdim is not None else embed_dim
+cg_detr/attention.py:91:        self.vdim = vdim if vdim is not None else embed_dim
+cg_detr/attention.py:99:        vdim = vdim if vdim is not None else embed_dim
+cg_detr/attention.py:118:        if '_qkv_same_embed_dim' not in state:
+cg_detr/attention.py:153:          positions. If a ByteTensor is provided, the non-zero positions are not allowed to attend
+cg_detr/attention.py:155:          is not allowed to attend while ``False`` values will be unchanged. If a FloatTensor
+cg_detr/attention.py:163:        if not self._qkv_same_embed_dim:
+cg_detr/attention.py:214:        embed_dim_to_check: total dimension of the model.
+cg_detr/attention.py:249:          positions. If a ByteTensor is provided, the non-zero positions are not allowed to attend
+cg_detr/attention.py:251:          are not allowed to attend while ``False`` values will be unchanged. If a FloatTensor
+cg_detr/attention.py:263:    if not torch.jit.is_scripting():
+cg_detr/attention.py:266:        if any([type(t) is not Tensor for t in tens_ops]) and has_torch_function(tens_ops):
+cg_detr/attention.py:290:    if attn_mask is not None:
+cg_detr/attention.py:293:            'Only float, byte, and bool types are supported for attn_mask, not {}'.format(attn_mask.dtype)
+cg_detr/attention.py:301:                raise RuntimeError('The size of the 2D attn_mask is not correct.')
+cg_detr/attention.py:304:                raise RuntimeError('The size of the 3D attn_mask is not correct.')
+cg_detr/attention.py:306:            raise RuntimeError("attn_mask's dimension {} is not supported".format(attn_mask.dim()))
+cg_detr/attention.py:310:    if key_padding_mask is not None and key_padding_mask.dtype == torch.uint8:
+cg_detr/attention.py:314:    if bias_k is not None and bias_v is not None:
+cg_detr/attention.py:318:            if attn_mask is not None:
+cg_detr/attention.py:320:            if key_padding_mask is not None:
+cg_detr/attention.py:323:            assert static_k is None, "bias cannot be added to static key."
+cg_detr/attention.py:324:            assert static_v is None, "bias cannot be added to static value."
+cg_detr/attention.py:330:    if k is not None:
+cg_detr/attention.py:332:    if v is not None:
+cg_detr/attention.py:335:    if static_k is not None:
+cg_detr/attention.py:340:    if static_v is not None:
+cg_detr/attention.py:347:    if key_padding_mask is not None:
+cg_detr/attention.py:355:        if attn_mask is not None:
+cg_detr/attention.py:357:        if key_padding_mask is not None:
+cg_detr/attention.py:363:    if attn_mask is not None:
+cg_detr/attention.py:370:    if key_padding_mask is not None:
+cg_detr/position_encoding.py:45:        if scale is not None and normalize is False:
+cg_detr/position_encoding.py:60:        assert mask is not None
+cg_detr/position_encoding.py:105:        # TODO find a better way of exposing other arguments
+cg_detr/position_encoding.py:110:        raise ValueError(f"not supported {args.position_embedding}")
+cg_detr/crossattention.py:66:        \text{MultiHead}(Q, K, V) = \text{Concat}(head_1,\dots,head_h)W^O
+cg_detr/crossattention.py:69:        embed_dim: total dimension of the model.
+cg_detr/crossattention.py:76:        kdim: total number of features in key. Default: None.
+cg_detr/crossattention.py:77:        vdim: total number of features in value. Default: None.
+cg_detr/crossattention.py:78:        Note: if kdim and vdim are None, they will be set to embed_dim such that
+cg_detr/crossattention.py:91:        self.kdim = kdim if kdim is not None else embed_dim
+cg_detr/crossattention.py:92:        self.vdim = vdim if vdim is not None else embed_dim
+cg_detr/crossattention.py:100:        vdim = vdim if vdim is not None else embed_dim
+cg_detr/crossattention.py:119:        if '_qkv_same_embed_dim' not in state:
+cg_detr/crossattention.py:154:          positions. If a ByteTensor is provided, the non-zero positions are not allowed to attend
+cg_detr/crossattention.py:156:          is not allowed to attend while ``False`` values will be unchanged. If a FloatTensor
+cg_detr/crossattention.py:164:        if not self._qkv_same_embed_dim:
+cg_detr/crossattention.py:217:        embed_dim_to_check: total dimension of the model.
+cg_detr/crossattention.py:252:          positions. If a ByteTensor is provided, the non-zero positions are not allowed to attend
+cg_detr/crossattention.py:254:          are not allowed to attend while ``False`` values will be unchanged. If a FloatTensor
+cg_detr/crossattention.py:266:    if not torch.jit.is_scripting():
+cg_detr/crossattention.py:269:        if any([type(t) is not Tensor for t in tens_ops]) and has_torch_function(tens_ops):
+cg_detr/crossattention.py:293:    if attn_mask is not None:
+cg_detr/crossattention.py:296:            'Only float, byte, and bool types are supported for attn_mask, not {}'.format(attn_mask.dtype)
+cg_detr/crossattention.py:304:                raise RuntimeError('The size of the 2D attn_mask is not correct.')
+cg_detr/crossattention.py:307:                raise RuntimeError('The size of the 3D attn_mask is not correct.')
+cg_detr/crossattention.py:309:            raise RuntimeError("attn_mask's dimension {} is not supported".format(attn_mask.dim()))
+cg_detr/crossattention.py:313:    if key_padding_mask is not None and key_padding_mask.dtype == torch.uint8:
+cg_detr/crossattention.py:317:    if bias_k is not None and bias_v is not None:
+cg_detr/crossattention.py:321:            if attn_mask is not None:
+cg_detr/crossattention.py:323:            if key_padding_mask is not None:
+cg_detr/crossattention.py:326:            assert static_k is None, "bias cannot be added to static key."
+cg_detr/crossattention.py:327:            assert static_v is None, "bias cannot be added to static value."
+cg_detr/crossattention.py:333:    if k is not None:
+cg_detr/crossattention.py:335:    if v is not None:
+cg_detr/crossattention.py:338:    if static_k is not None:
+cg_detr/crossattention.py:343:    if static_v is not None:
+cg_detr/crossattention.py:350:    if key_padding_mask is not None:
+cg_detr/crossattention.py:358:        if attn_mask is not None:
+cg_detr/crossattention.py:360:        if key_padding_mask is not None:
+cg_detr/crossattention.py:366:    if attn_mask is not None:
+cg_detr/crossattention.py:373:    if key_padding_mask is not None:
+cg_detr/span_utils.py:28:        cxw_spans: tensor, (#windows, 2) or (..., 2), the last dim is a row denoting a window of format (center, width)

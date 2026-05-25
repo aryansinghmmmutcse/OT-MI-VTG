@@ -1,0 +1,11 @@
+*.ckpt
+*.pth
+*.pt
+__pycache__/
+*.pyc
+results*/
+data/
+*.log
+*.zip
+tensorboard_log/
+nohup.out

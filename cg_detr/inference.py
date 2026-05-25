@@ -11,7 +11,7 @@ import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
 
 from cg_detr.config import TestOptions
-from cg_detr.model import build_model
+from cg_detr.model_otmi import build_model
 from cg_detr.span_utils import span_cxw_to_xx
 from cg_detr.start_end_dataset import StartEndDataset, start_end_collate, prepare_batch_inputs
 from cg_detr.postprocessing_cg_detr import PostProcessorDETR
@@ -387,7 +387,7 @@ def setup_model(opt):
 
     if opt.resume is not None:
         logger.info(f"Load checkpoint from {opt.resume}")
-        checkpoint = torch.load(opt.resume, map_location="cpu")
+        checkpoint = torch.load(opt.resume, map_location="cpu", weights_only=False)
         from collections import OrderedDict
         new_state_dict = OrderedDict()
         if 'pt' in opt.resume[:-4]:

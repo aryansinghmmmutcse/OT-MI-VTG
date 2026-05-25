@@ -146,18 +146,18 @@ def train(model, criterion, optimizer, lr_scheduler, train_dataset, val_dataset,
 
             with open(opt.eval_log_filepath, "a") as f:
                 f.write(to_write)
-            logger.info("metrics_no_nms {}".format(pprint.pformat(metrics_no_nms["brief"], indent=4)))
+            logger.info("metrics_no_nms {}".format(pprint.pformat(metrics_no_nms["brief"] if metrics_no_nms and "brief" in metrics_no_nms else metrics_no_nms, indent=4)))
             if metrics_nms is not None:
                 logger.info("metrics_nms {}".format(pprint.pformat(metrics_nms["brief"], indent=4)))
 
             metrics = metrics_no_nms
-            for k, v in metrics["brief"].items():
+            for k, v in (metrics["brief"] if metrics and "brief" in metrics and metrics["brief"] is not None else {}).items():
                 tb_writer.add_scalar(f"Eval/{k}", float(v), epoch_i+1)
 
             if opt.dset_name in ['hl']:
                 stop_score = metrics["brief"]["MR-full-mAP"]
             else:
-                stop_score = (metrics["brief"]["MR-full-R1@0.7"] + metrics["brief"]["MR-full-R1@0.5"]) / 2
+                stop_score = (metrics["brief"]["MR-full-R1@0.7"] + metrics["brief"]["MR-full-R1@0.5"]) / 2 if metrics and metrics.get("brief") else 0
 
                 
             if stop_score > prev_best_score:
@@ -259,7 +259,7 @@ def train_hl(model, criterion, optimizer, lr_scheduler, train_dataset, val_datas
 
             with open(opt.eval_log_filepath, "a") as f:
                 f.write(to_write)
-            logger.info("metrics_no_nms {}".format(pprint.pformat(metrics_no_nms["brief"], indent=4)))
+            logger.info("metrics_no_nms {}".format(pprint.pformat(metrics_no_nms["brief"] if metrics_no_nms and "brief" in metrics_no_nms else metrics_no_nms, indent=4)))
             if metrics_nms is not None:
                 logger.info("metrics_nms {}".format(pprint.pformat(metrics_nms["brief"], indent=4)))
 
