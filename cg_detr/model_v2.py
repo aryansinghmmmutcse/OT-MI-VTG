@@ -9,7 +9,7 @@ from torch import nn
 from cg_detr.span_utils import generalized_temporal_iou, span_cxw_to_xx
 
 from cg_detr.matcher import build_matcher
-from cg_detr.transformer import build_transformer, TransformerEncoderLayer, TransformerEncoder
+from cg_detr.transformer_v2 import build_transformer, TransformerEncoderLayer, TransformerEncoder
 from cg_detr.position_encoding import build_position_encoding
 from cg_detr.misc import accuracy
 import numpy as np
@@ -1023,9 +1023,6 @@ def build_model(args):
 
     matcher = build_matcher(args)
     weight_dict = {"loss_span": args.span_loss_coef,
-                   "loss_boundary": 1.0,
-                   "loss_mi": 1.0,
-                   "loss_div": 1.0,
                    "loss_giou": args.giou_loss_coef,
                    "loss_label": args.label_loss_coef,
                    "loss_saliency": args.lw_saliency,

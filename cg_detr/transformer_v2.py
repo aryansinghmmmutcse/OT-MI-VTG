@@ -543,12 +543,7 @@ class T2V_TransformerEncoderLayer(nn.Module):
         pos_bias = torch.abs(
             pos_v.unsqueeze(1) - pos_t.unsqueeze(0)
         ).unsqueeze(0).expand(B_, -1, -1)
-        # Asymmetric bias — scale by text length
-        # short queries get less bias, long queries get more
-        txt_len = torch.tensor(float(_L), device=q.device)
-        vid_len = torch.tensor(float(_T), device=q.device)
-        len_ratio = (txt_len / (vid_len + 1e-6)).clamp(0.0, 1.0)
-        cost = cost_semantic + self.lambda_pos * pos_bias * len_ratio
+        cost = cost_semantic + self.lambda_pos * pos_bias
         if _T == 0 or _L == 0:
             src2 = src2_soft
         else:
@@ -620,6 +615,8 @@ class T2V_TransformerEncoderLayer(nn.Module):
             c_b = src2_coarse                              # (T,B,D)
             o_b_ms = (beta * o_b +
                       (1-beta) * c_b.permute(1,0,2))      # (B,T,D)
+            # VERSION 2 FLAG: use fine only (no multiscale)
+            o_b_ms = o_b
             src2 = ((1-alpha)*s_b + alpha*o_b_ms).permute(1,0,2)  # (T,B,D)
 
         src2 = src[:video_length] + self.dropout1(src2)

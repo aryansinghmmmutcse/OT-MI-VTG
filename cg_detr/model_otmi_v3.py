@@ -1,6 +1,6 @@
 import torch, torch.nn as nn, torch.nn.functional as F, sys
 sys.path.insert(0, "/mnt/DATA/hari/vand/VTG_Project/CGDETR_OTMI")
-from cg_detr.model import build_model as build_base
+from cg_detr.model_v3 import build_model as build_base
 from cg_detr.matcher import build_matcher
 
 
@@ -63,16 +63,6 @@ class CGDETR_OTMI(nn.Module):
         # Add MI losses to output for criterion
         out['loss_mi']  = l_mi  * self.lw_mi
         out['loss_div'] = l_div * self.lw_div
-
-        # Boundary sharpening loss — encourages confident span predictions
-        # Targets R1@0.7 improvement via sharper boundary localization
-        if 'pred_spans' in out:
-            pred_spans = out['pred_spans'].sigmoid()
-            boundary_entropy = -(
-                pred_spans * torch.log(pred_spans + 1e-6) +
-                (1 - pred_spans) * torch.log(1 - pred_spans + 1e-6)
-            )
-            out['loss_boundary'] = boundary_entropy.mean() * 0.01
         return out
 
 

@@ -543,12 +543,8 @@ class T2V_TransformerEncoderLayer(nn.Module):
         pos_bias = torch.abs(
             pos_v.unsqueeze(1) - pos_t.unsqueeze(0)
         ).unsqueeze(0).expand(B_, -1, -1)
-        # Asymmetric bias — scale by text length
-        # short queries get less bias, long queries get more
-        txt_len = torch.tensor(float(_L), device=q.device)
-        vid_len = torch.tensor(float(_T), device=q.device)
-        len_ratio = (txt_len / (vid_len + 1e-6)).clamp(0.0, 1.0)
-        cost = cost_semantic + self.lambda_pos * pos_bias * len_ratio
+        # VERSION 3 FLAG: no position bias
+        cost = cost_semantic
         if _T == 0 or _L == 0:
             src2 = src2_soft
         else:

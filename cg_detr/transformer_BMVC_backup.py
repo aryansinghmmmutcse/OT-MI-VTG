@@ -478,8 +478,6 @@ class T2V_TransformerEncoderLayer(nn.Module):
         )
         nn.init.zeros_(self.ot_calibrator[2].weight)
         nn.init.constant_(self.ot_calibrator[2].bias, -3.0)
-        self.lambda_pos = 0.1
-        self.scale_gate = nn.Parameter(torch.zeros(1))
         # Implementation of Feedforward model
         self.linear1 = nn.Linear(d_model, dim_feedforward)
         self.dropout = nn.Dropout(dropout)
@@ -536,19 +534,8 @@ class T2V_TransformerEncoderLayer(nn.Module):
         Q_b = _F.normalize(q.permute(1,0,2), dim=-1)
         K_b = _F.normalize(k.permute(1,0,2), dim=-1)
         V_b = v.permute(1,0,2)
-        cost_semantic = 1.0 - torch.bmm(Q_b, K_b.transpose(1,2))
-        B_, _T, _L = cost_semantic.shape
-        pos_v = torch.arange(_T, device=q.device).float() / _T
-        pos_t = torch.arange(_L, device=k.device).float() / _L
-        pos_bias = torch.abs(
-            pos_v.unsqueeze(1) - pos_t.unsqueeze(0)
-        ).unsqueeze(0).expand(B_, -1, -1)
-        # Asymmetric bias — scale by text length
-        # short queries get less bias, long queries get more
-        txt_len = torch.tensor(float(_L), device=q.device)
-        vid_len = torch.tensor(float(_T), device=q.device)
-        len_ratio = (txt_len / (vid_len + 1e-6)).clamp(0.0, 1.0)
-        cost = cost_semantic + self.lambda_pos * pos_bias * len_ratio
+        cost = 1.0 - torch.bmm(Q_b, K_b.transpose(1,2))
+        B_, _T, _L = cost.shape
         if _T == 0 or _L == 0:
             src2 = src2_soft
         else:
@@ -564,63 +551,13 @@ class T2V_TransformerEncoderLayer(nn.Module):
             src2_ot = torch.bmm(P, V_b).permute(1,0,2)   # (T,B,D)
             attn_weights = P
 
-            # Multi-scale coarse OT
-            import torch.nn.functional as _F2
-            seg_size = 4
-            num_segs = max(1, _T // seg_size)
-            num_chunks = max(1, _L // 2)
-            # Use q and k directly (T,B,D) -> (B,T,D)
-            Q_b_raw = q.permute(1,0,2)  # B x _T x D
-            K_b_raw = k.permute(1,0,2)  # B x _L x D
-            V_coarse = Q_b_raw[:, :num_segs*seg_size, :].reshape(
-                B_, num_segs, seg_size, Q_b_raw.shape[-1]).mean(dim=2)
-            K_coarse = _F2.normalize(
-                K_b_raw[:, :num_chunks*2, :].reshape(
-                    B_, num_chunks, 2, K_b_raw.shape[-1]).mean(dim=2), dim=-1)
-            Q_coarse = _F2.normalize(V_coarse, dim=-1)
-            cost_c = 1.0 - torch.bmm(Q_coarse, K_coarse.transpose(1,2))
-            log_Kc = -cost_c.clamp(0, 10) / 0.1
-            log_uc = torch.full(
-                (B_, num_segs),
-                -torch.log(torch.tensor(float(num_segs))).item(),
-                device=q.device)
-            log_vc = torch.full(
-                (B_, num_chunks),
-                -torch.log(torch.tensor(float(num_chunks))).item(),
-                device=q.device)
-            for _ in range(5):
-                log_uc = (
-                    -torch.log(torch.tensor(float(num_segs))).item()
-                    - torch.logsumexp(log_Kc + log_vc.unsqueeze(1), dim=2))
-                log_vc = (
-                    -torch.log(torch.tensor(float(num_chunks))).item()
-                    - torch.logsumexp(log_Kc + log_uc.unsqueeze(2), dim=1))
-            Pc = torch.exp(
-                log_Kc + log_uc.unsqueeze(2) + log_vc.unsqueeze(1))
-            Kc_val = K_b_raw[:, :num_chunks*2, :].reshape(
-                B_, num_chunks, 2, K_b_raw.shape[-1]).mean(dim=2)
-            src2_coarse_raw = torch.bmm(Pc, Kc_val).repeat_interleave(
-                seg_size, dim=1)  # B x (num_segs*seg_size) x D
-            # Pad or trim to exactly _T frames
-            if src2_coarse_raw.shape[1] < _T:
-                pad = torch.zeros(
-                    B_, _T - src2_coarse_raw.shape[1],
-                    src2_coarse_raw.shape[2],
-                    device=q.device)
-                src2_coarse_raw = torch.cat([src2_coarse_raw, pad], dim=1)
-            src2_coarse = src2_coarse_raw[:, :_T, :].permute(1,0,2)
-
             # Step 3: Calibration net — per-frame learned gate
             # Starts near 0 (bias=-3) → model begins as pure CG-DETR
             # Gradually opens as training finds OT useful
             alpha = self.ot_calibrator(q.permute(1,0,2))  # (B,T,1)
-            beta = torch.sigmoid(self.scale_gate)          # scalar
             s_b = src2_soft.permute(1,0,2)                # (B,T,D)
             o_b = src2_ot.permute(1,0,2)                  # (B,T,D)
-            c_b = src2_coarse                              # (T,B,D)
-            o_b_ms = (beta * o_b +
-                      (1-beta) * c_b.permute(1,0,2))      # (B,T,D)
-            src2 = ((1-alpha)*s_b + alpha*o_b_ms).permute(1,0,2)  # (T,B,D)
+            src2 = ((1-alpha)*s_b + alpha*o_b).permute(1,0,2)  # (T,B,D)
 
         src2 = src[:video_length] + self.dropout1(src2)
         src3 = self.norm1(src2)

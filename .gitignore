@@ -1,11 +1,28 @@
-*.ckpt
+# Large data files
+*.npy
 *.pth
 *.pt
+*.ckpt
+*.pkl
+*.h5
+
+# Logs and results
+results/
+logs/
+runs/
+
+# Python cache
 __pycache__/
 *.pyc
-results*/
+*.pyo
+
+# Features and data
 data/
+features/
+
+# Jupyter
+*.ipynb
+
+# System
+.DS_Store
 *.log
-*.zip
-tensorboard_log/
-nohup.out

@@ -1,17 +1,17 @@
-dset_name=charadesSTA
+dset_name=hl
 ctx_mode=video_tef
 v_feat_types=slowfast_clip
 t_feat_type=clip 
-results_root=results_charadesSTA
+results_root=results
 exp_id=exp
 
 ######## data paths
-train_path=data/charades_sta/charades_sta_train_tvr_format.jsonl
-eval_path=data/charades_sta/charades_sta_test_tvr_format.jsonl
+train_path=data/highlight_train_release.jsonl
+eval_path=data/highlight_val_release.jsonl
 eval_split_name=val
 
 ######## setup video+text features
-feat_root=/mnt/DATA/hari/vand/VTG_Project/data/features/charades
+feat_root=../features/qvhighlight
 
 # video features
 v_feat_dim=0
@@ -36,19 +36,16 @@ fi
 
 #### training
 bsz=32
-eval_bsz=32
-num_dummies=45
-num_prompts=2
-total_prompts=10
-lr_drop=400
 enc_layers=3
 dec_layers=3
 t2v_layers=2
-dummy_layers=2
 moment_layers=1
+dummy_layers=2
 sent_layers=1
+max_v_l=75
+max_q_l=32
 
-PYTHONPATH=$PYTHONPATH:. python cg_detr/train.py \
+PYTHONPATH=$PYTHONPATH:. python cg_detr/train_v3.py \
 --dset_name ${dset_name} \
 --ctx_mode ${ctx_mode} \
 --train_path ${train_path} \
@@ -61,21 +58,12 @@ PYTHONPATH=$PYTHONPATH:. python cg_detr/train.py \
 --bsz ${bsz} \
 --results_root ${results_root} \
 --exp_id ${exp_id} \
---max_v_l -1 \
---clip_length 1 \
---lr 0.0002 \
---lr_drop ${lr_drop} \
---n_epoch 200 \
---contrastive_align_loss_coef 0.002 \
---lw_saliency 4 \
 --enc_layers ${enc_layers} \
 --dec_layers ${dec_layers} \
 --t2v_layers ${t2v_layers} \
 --moment_layers ${moment_layers} \
 --dummy_layers ${dummy_layers} \
 --sent_layers ${sent_layers} \
---eval_bsz ${eval_bsz} \
---num_dummies ${num_dummies} \
---num_prompts ${num_prompts} \
---total_prompts ${total_prompts} \
+--max_v_l ${max_v_l} \
+--max_q_l ${max_q_l} \
 ${@:1}
